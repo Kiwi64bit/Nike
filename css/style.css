@@ -1,0 +1,131 @@
+body {
+    background-color: var(--primary-color);
+}
+
+#heroSlideShow .slide .hero-text {
+    translate: -50% 0;
+    opacity: 0;
+    transition: translate 1s 1s, opacity 1s 1s;
+}
+
+#heroSlideShow .slide .hero-image {
+    translate: 0 -15%;
+}
+
+#heroSlideShow .slide .hero-image .run-image {
+    translate: 0 -50%;
+    opacity: 0;
+    transition: translate 1s 0.5s, opacity 1s 0.5s;
+}
+
+#heroSlideShow .slide .hero-image .shoe-image {
+    rotate: 10deg;
+    scale: 0.5;
+    translate: -5% 40%;
+    transition: rotate 1s, scale 1s;
+}
+
+#heroSlideShow .slide.show .hero-text {
+    translate: 0 0;
+    opacity: 1;
+}
+
+#heroSlideShow .slide.show .hero-image .run-image {
+    translate: 0 0;
+    opacity: 1;
+}
+
+#heroSlideShow .slide.show .hero-image .shoe-image {
+    rotate: -25deg;
+    scale: 1;
+}
+
+#offers .sale {
+    scale: 1.1;
+    transition: scale 1s;
+}
+
+#offers .sale:hover {
+    scale: 1;
+}
+
+.latest-card .thumbnail {
+    cursor: pointer;
+}
+
+.latest-card .thumbnail img {
+    scale: 0.9;
+    transition: scale 0.35s;
+}
+
+.latest-card .thumbnail:hover img {
+    scale: 1;
+}
+
+.featured-card {
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 3px 8px;
+}
+
+.featured-card .card-image {
+    position: relative;
+}
+
+.featured-card .card-image img {
+    scale: 0.9;
+    transition: scale 0.5s;
+}
+
+.featured-card .discount {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    rotate: 45deg;
+    translate: 50% -50%;
+}
+
+.featured-card .view-btn {
+    display: flex;
+    width: 2.25em;
+    aspect-ratio: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.featured-card .view-btn-container {
+    translate: 0 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: translate 1s, opacity 1s;
+}
+
+.featured-card .indicators {
+    translate: 0 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: translate 1s, opacity 1s;
+}
+
+.featured-card .controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.featured-card:hover .card-image .view-btn-container {
+    translate: 0 0;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.featured-card:hover .card-image .indicators {
+    translate: 0 0;
+    opacity: 1;
+    pointer-events: auto;
+    transition: translate 1s 0.3s, opacity 1s 0.3s;
+}
+
+.featured-card:hover .card-image img {
+    scale: 1;
+}
