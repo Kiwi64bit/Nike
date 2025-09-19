@@ -80,18 +80,14 @@ for (let link of navLinks) {
 
 let latestProducts = latest.map(productData => {
     let latestCard = createLatestCard(productData);
-    let colWrapper = document.createElement("div");
-    colWrapper.classList.add("col");
-    colWrapper.appendChild(latestCard);
+    let colWrapper = createWrapper(latestCard, "div", "col");
     return colWrapper;
 });
 appendProducts(latestProducts, document.getElementById("latestContainer"));
 
 let featuredProducts = featured.map(productData => {
     let featuredCard = createFeaturedCard(productData);
-    let colWrapper = document.createElement("div");
-    colWrapper.classList.add("col");
-    colWrapper.appendChild(featuredCard);
+    let colWrapper = createWrapper(featuredCard, "div", "col");
     return colWrapper;
 });
 appendProducts(featuredProducts, document.getElementById("featuredContainer"));
@@ -109,51 +105,51 @@ document.addEventListener("click", event => {
     let btn = event.target.closest("[data-action]");
     if (!btn) return;
 
-    if (btn.matches(`[data-action~="dismissModal"]`)) {
-        closeModal(btn.dataset.target);
-    }
+    let actions = btn.dataset.action.split(" ");
 
-    if (btn.matches(`[data-action~="toggleModal"]`)) {
-        toggleModal(btn.dataset.target);
-    }
-
-    if (btn.matches(`[data-action~="updateProductModal"]`)) {
-        let data = products.find(product => product.id == btn.dataset.id);
-        let productCard = createLatestCard(data);
-        updateModalContent(btn.dataset.target, productCard.outerHTML);
-    }
-
-    if (btn.matches(`[data-action~="addToCart"]`)) {
-        let productData = getProductData(btn);
-        addToCart(shoppingCart, productData);
-    }
-
-    if (btn.matches(`[data-action~="removeFromCart"]`)) {
-        let productData = getProductData(btn);
-        shoppingCart = removeFromCart(shoppingCart, productData);
-    }
-
-    if (btn.matches(`[data-action~="updateCartModal"]`)) {
-        let footer = document.querySelector(`${btn.dataset.target} .custom-modal-footer`);
-        let productsContainer = document.createElement("div");
-        productsContainer.classList.add(..."row row-cols-3 gx-3 row-gap-3 justify-content-center".split(" "));
-        for (let data of shoppingCart) {
-            let productCard = createCartCard(data);
-            let colWrapper = document.createElement("div");
-            colWrapper.classList.add("col");
-            colWrapper.appendChild(productCard);
-            productsContainer.appendChild(colWrapper);
+    for (const action of actions) {
+        if (action === "dismissModal") {
+            closeModal(btn.dataset.target);
+            continue;
         }
-        if (productsContainer.childElementCount == 0) {
-            footer.style.display = "none";
-            let warningMessage = document.createElement("p");
-            warningMessage.classList.add(..."alert alert-warning text-center".split(" "));
-            warningMessage.textContent = "There are no products!";
-            updateModalContent(btn.dataset.target, warningMessage.outerHTML);
-            return;
+
+        if (action === "toggleModal") {
+            toggleModal(btn.dataset.target);
+            continue;
         }
-        footer.style.display = "flex";
-        updateModalContent(btn.dataset.target, productsContainer.outerHTML);
+
+        if (action === "updateProductModal") {
+            let data = products.find(product => product.id == btn.dataset.id);
+            let productCard = createLatestCard(data);
+            updateModalContent(btn.dataset.target, productCard.outerHTML);
+            continue;
+        }
+
+        if (action === "addToCart") {
+            let productData = getProductData(btn);
+            addToCart(shoppingCart, productData);
+            continue;
+        }
+
+        if (action === "removeFromCart") {
+            let productData = getProductData(btn);
+            shoppingCart = removeFromCart(shoppingCart, productData);
+            continue;
+        }
+
+        if (action === "updateCartModal") {
+            let footer = document.querySelector(`${btn.dataset.target} .custom-modal-footer`);
+            if (shoppingCart.length < 1) {
+                let warningMessage = createWarningMessage("There are no products!");
+                updateModalContent(btn.dataset.target, warningMessage.outerHTML);
+                footer.style.display = "none";
+            } else {
+                let productsContainer = createProductsContainer(shoppingCart);
+                updateModalContent(btn.dataset.target, productsContainer.outerHTML);
+                footer.style.display = "flex";
+            }
+            continue;
+        }
     }
 });
 

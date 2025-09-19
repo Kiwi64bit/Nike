@@ -131,6 +131,13 @@ function toggleModal(targetSelector) {
 }
 
 // Create
+function createWrapper(element, wrapperTag, wrapperClass) {
+    let colWrapper = document.createElement(wrapperTag);
+    colWrapper.classList.add(...wrapperClass.split(" "));
+    colWrapper.appendChild(element);
+    return colWrapper;
+}
+
 function createThumbnailImages(images, target) {
     let thumbnailImages = document.createElement("div");
     thumbnailImages.classList.add(
@@ -267,6 +274,24 @@ function createCartCard(data) {
         </button>`;
 
     return productCard;
+}
+
+function createProductsContainer(cart) {
+    let productsContainer = document.createElement("div");
+    productsContainer.classList.add(..."row row-cols-3 gx-3 row-gap-3 justify-content-center".split(" "));
+    for (let data of cart) {
+        let productCard = createCartCard(data);
+        let colWrapper = createWrapper(productCard, "div", "col");
+        productsContainer.appendChild(colWrapper);
+    }
+    return productsContainer;
+}
+
+function createWarningMessage(text) {
+    let warningMessage = document.createElement("p");
+    warningMessage.classList.add(..."alert alert-warning text-center".split(" "));
+    warningMessage.textContent = text;
+    return warningMessage;
 }
 
 // Append
