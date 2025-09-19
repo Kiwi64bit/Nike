@@ -278,7 +278,7 @@ function createCartCard(data) {
 
 function createProductsContainer(cart) {
     let productsContainer = document.createElement("div");
-    productsContainer.classList.add(..."row row-cols-3 gx-3 row-gap-3 justify-content-center".split(" "));
+    productsContainer.classList.add(..."row row-cols-1 row-cols-sm-2 row-cols-md-3 gx-3 row-gap-3 justify-content-center".split(" "));
     for (let data of cart) {
         let productCard = createCartCard(data);
         let colWrapper = createWrapper(productCard, "div", "col");
