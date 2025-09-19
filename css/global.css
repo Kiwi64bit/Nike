@@ -1,8 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 :root {
     --main-color: #f8342c;
     --primary-color: hsl(0, 0%, 90%);
     --title-image-folder: "../images/nike_icons";
     --title-image-url: url("../images/nike_icons/icon_red.png");
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+    font-family: "Nunito";
 }
 
 .text-main {
