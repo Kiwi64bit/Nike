@@ -1,6 +1,6 @@
 // Utility
 function closestSibling(element, selector) {
-    const relative = element?.parentElement?.querySelector(selector);
+    let relative = element?.parentElement?.querySelector(selector);
     return relative;
 }
 
@@ -12,7 +12,7 @@ function closestDescendant(element, selector) {
 }
 
 function transferClass(element, className) {
-    const currentActive = closestSibling(element, `.${className}`);
+    let currentActive = closestSibling(element, `.${className}`);
     currentActive?.classList.remove(className);
     element?.classList.add(className);
 }
@@ -25,41 +25,92 @@ function onNextFrame(callback) {
     });
 }
 
+function deepEquality(obj1 = null, obj2 = null, exceptions = null) {
+    if (obj1 === obj2) return true;
+
+    if (typeof obj1 !== "object" || typeof obj2 !== "object" || obj1 === null || obj2 === null) {
+        return false;
+    }
+
+    let keys1 = Object.keys(obj1);
+    let keys2 = Object.keys(obj1);
+
+    if (keys1.length !== keys2.length) return false;
+
+    for (let key of keys1) {
+        if (exceptions && exceptions.includes(key)) continue;
+        if (!keys2.includes(key) || !deepEquality(obj1[key], obj2[key])) return false;
+    }
+
+    return true;
+}
+
+function getProductData(btnElement) {
+    let productCard = btnElement.closest(`.product-card[data-id]`);
+    let productId = productCard.dataset.id;
+    let productSize = productCard.querySelector(".indicator-size.active").textContent;
+    let productColor = productCard.querySelector(".indicator-color.active").style.getPropertyValue("--bg-color");
+    return { id: productId, size: productSize, color: productColor, count: 1 };
+}
+
+function addToCart(cart, data) {
+    let existing = cart.find(product => deepEquality(product, data, ["count"]));
+    if (existing) {
+        existing.count++;
+    } else {
+        cart.push(data);
+    }
+    localStorage.setItem("shoppingCart", JSON.stringify(cart));
+}
+
+function removeFromCart(cart, data) {
+    let existing = cart.find(product => deepEquality(product, data, ["count"]));
+    let newCart = cart;
+    if (existing && existing.count - 1 > 0) {
+        existing.count--;
+    } else {
+        newCart = cart.filter(product => !deepEquality(product, data, ["count"]));
+    }
+    localStorage.setItem("shoppingCart", JSON.stringify(newCart));
+    return newCart;
+}
+
 // UI updates
 function updateMainColor(color) {
     document.documentElement.style.setProperty("--main-color", color);
 }
 
 function updateTitleImage(fileName) {
-    const root = document.documentElement;
-    const folderPath = getComputedStyle(root).getPropertyValue("--title-image-folder").replace(/["']/g, "");
+    let root = document.documentElement;
+    let folderPath = getComputedStyle(root).getPropertyValue("--title-image-folder").replace(/["']/g, "");
     root.style.setProperty("--title-image-url", `url("${folderPath}/${fileName}")`);
 }
 
 function updateTargetImage(element) {
-    const currentSrc = closestDescendant(element, "[src]").getAttribute("src");
+    let currentSrc = closestDescendant(element, "[src]").getAttribute("src");
     if (!currentSrc) return;
-    const targetSelector = element.dataset.target;
-    const target = document.querySelector(targetSelector);
-    const targetImage = closestDescendant(target, "[src]");
+    let targetSelector = element.dataset.target;
+    let target = document.querySelector(targetSelector);
+    let targetImage = closestDescendant(target, "[src]");
     targetImage?.setAttribute("src", currentSrc);
 }
 
 function updateModalContent(targetSelector, innerContent) {
-    const modal = document.querySelector(targetSelector);
-    const modalBody = modal.querySelector(".custom-modal-body");
+    let modal = document.querySelector(targetSelector);
+    let modalBody = modal.querySelector(".custom-modal-body");
     modalBody.innerHTML = innerContent;
 }
 
-// UI control
 function openModal(targetSelector) {
-    const modal = document.querySelector(targetSelector);
+    let modal = document.querySelector(targetSelector);
+    document.body.style.overflow = "hidden";
     modal.classList.add("active");
     onNextFrame(() => modal.classList.add("show"));
 }
 
 function closeModal(targetSelector) {
-    const modal = document.querySelector(targetSelector);
+    let modal = document.querySelector(targetSelector);
+    document.body.style.overflow = "auto";
     modal.classList.remove("show");
 
     modal.addEventListener("transitionend", function handler(event) {
@@ -71,7 +122,7 @@ function closeModal(targetSelector) {
 }
 
 function toggleModal(targetSelector) {
-    const modal = document.querySelector(targetSelector);
+    let modal = document.querySelector(targetSelector);
     if (!modal.classList.contains("active")) {
         openModal(targetSelector);
         return;
@@ -81,7 +132,7 @@ function toggleModal(targetSelector) {
 
 // Create
 function createThumbnailImages(images, target) {
-    const thumbnailImages = document.createElement("div");
+    let thumbnailImages = document.createElement("div");
     thumbnailImages.classList.add(
         ...`row m-0 gy-0 gx-1 gx-sm-2 col-12 row-cols-${images.length} row-gap-2 row-cols-md-1 col-md-2 gx-md-0`.split(
             " "
@@ -101,16 +152,16 @@ function createThumbnailImages(images, target) {
 }
 
 function createPrice(price, discount) {
-    const priceElement = document.createElement("span");
-    const oldPrice = discount ? `<del class="text-danger">$${price.toFixed(2)}</del>` : ``;
+    let priceElement = document.createElement("span");
+    let oldPrice = discount ? `<del class="text-danger">$${price.toFixed(2)}</del>` : ``;
     priceElement.innerHTML = `${oldPrice} $${((1 - discount) * price).toFixed(2)}`;
     return priceElement;
 }
 
 function createSizeIndicators(sizes) {
-    const indicatorsRow = document.createElement("span");
+    let indicatorsRow = document.createElement("span");
     indicatorsRow.classList.add(..."d-flex flex-wrap gap-2 fs-6".split(" "));
-    for (const size of sizes) {
+    for (let size of sizes) {
         indicatorsRow.innerHTML += `<span class="indicator-size" onclick="transferClass(this, 'active')">${size}</span>`;
     }
     indicatorsRow.firstElementChild.classList.add("active");
@@ -118,10 +169,10 @@ function createSizeIndicators(sizes) {
 }
 
 function createColorIndicators(colors) {
-    const indicatorsRow = document.createElement("span");
+    let indicatorsRow = document.createElement("span");
     indicatorsRow.classList.add(..."d-flex flex-wrap gap-2 fs-6".split(" "));
-    for (const color of colors) {
-        indicatorsRow.innerHTML += `<span class="indicator-color" style="background-color: ${color};"
+    for (let color of colors) {
+        indicatorsRow.innerHTML += `<span class="indicator-color" style="--bg-color: ${color};"
         onclick="transferClass(this, 'active')"></span>`;
     }
     indicatorsRow.firstElementChild.classList.add("active");
@@ -129,7 +180,7 @@ function createColorIndicators(colors) {
 }
 
 function createImageIndicators(images, target) {
-    const indicatorsContainer = document.createElement("div");
+    let indicatorsContainer = document.createElement("div");
     indicatorsContainer.classList.add(..."indicators d-flex justify-content-center align-items-center".split(" "));
     for (let i = 0; i < images.length; i++) {
         indicatorsContainer.innerHTML += `
@@ -142,8 +193,9 @@ function createImageIndicators(images, target) {
 }
 
 function createLatestCard(data) {
-    const latestCard = document.createElement("div");
-    latestCard.classList.add(..."latest-card bg-light rounded-3 border border-2 border-main".split(" "));
+    let latestCard = document.createElement("div");
+    latestCard.classList.add(..."latest-card product-card bg-light rounded-3 border border-2 border-main".split(" "));
+    latestCard.dataset.id = data.id;
     latestCard.innerHTML = `
         <div class="row g-0 p-3 row-gap-4">
             <div class="row g-0 col-12 col-lg-6">
@@ -159,15 +211,18 @@ function createLatestCard(data) {
                 <p><b>Price:</b> ${createPrice(data.price, data.discount).outerHTML}</p>
                 <p><b>Sizes:</b> ${createSizeIndicators(data.sizes).outerHTML}</p>
                 <p><b>Colors:</b> ${createColorIndicators(data.colors).outerHTML}</p>
-                <button class="btn btn-outline-main">Add to cart</button>
+                <button class="btn btn-outline-main" data-action="addToCart">Add to cart</button>
             </div>
         </div>`;
     return latestCard;
 }
 
 function createFeaturedCard(data) {
-    const featuredCard = document.createElement("div");
-    featuredCard.classList.add(..."featured-card text-center p-3 bg-light rounded-3 overflow-hidden".split(" "));
+    let featuredCard = document.createElement("div");
+    featuredCard.classList.add(
+        ..."featured-card product-card text-center p-3 bg-light rounded-3 overflow-hidden".split(" ")
+    );
+    featuredCard.dataset.id = data.id;
     featuredCard.innerHTML = `
         <div class="card-image p-1 my-4">
             <img id="featuredMainImage${data.id}" src="images/products/${data.images[0]}" 
@@ -175,7 +230,7 @@ function createFeaturedCard(data) {
             <div class="controls vstack justify-content-center align-items-center row-gap-3">
                 <div class="view-btn-container">
                     <button class="view-btn btn btn-outline-main fs-6 rounded-circle"
-                        data-toggle="modal productModal" data-target="#productModal0"
+                        data-action="toggleModal updateProductModal" data-target="#productModal0"
                         data-id=${data.id}>
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -193,35 +248,56 @@ function createFeaturedCard(data) {
     return featuredCard;
 }
 
+function createCartCard(data) {
+    let product = products.find(product => product.id == data.id);
+    let productCard = document.createElement("div");
+    productCard.classList.add(..."cart-card product-card bg-light rounded-3 p-3".split(" "));
+    productCard.dataset.id = data.id;
+    productCard.innerHTML = `
+        <img src="images/products/${product.images[0]}" alt="" class="img-fluid">
+        <h5 class="text-truncate" title="${product.name}">
+            ${product.name}
+        </h5>
+        <p>Price: ${createPrice(product.price, product.discount).outerHTML}</p>
+        <p>Size: <span class="indicator-size active">${data.size}</span></p>
+        <p>Color: <span class="indicator-color active" style="--bg-color: ${data.color};"></span></p>
+        <p>Count: ${data.count}</p>
+        <button class="btn btn-danger w-100" data-action="removeFromCart updateCartModal" data-target="#shoppingCartModal">
+            Remove
+        </button>`;
+
+    return productCard;
+}
+
 // Append
 function appendProducts(products, section) {
-    for (const product of products) {
+    for (let product of products) {
         section.appendChild(product);
     }
 }
 
 // Scroll Spy
 function getCurrentSection(sections, offset = 0) {
-    for (const section of sections) {
-        const currentScrollPos = document.documentElement.scrollTop + offset;
+    for (let section of sections) {
+        let currentScrollPos = document.documentElement.scrollTop + offset;
 
-        const startAt = section.offsetTop;
-        const endAt = startAt + section.offsetHeight;
+        let startAt = section.offsetTop;
+        let endAt = startAt + section.offsetHeight;
 
-        const isInView = startAt <= currentScrollPos && currentScrollPos < endAt;
+        let isInView = startAt <= currentScrollPos && currentScrollPos < endAt;
         if (isInView) return section;
     }
     return null;
 }
 
 function getCurrentMenuItem(navbar, id) {
-    const menuItem = navbar.querySelector(`.smart-nav-item:has(a[href="#${id}"])`);
+    let menuItem = navbar.querySelector(`.smart-nav-item:has(a[href="#${id}"])`);
     return menuItem;
 }
 
 function scrollSpy(sections, menu, offset) {
-    const section = getCurrentSection(sections, offset);
-    const menuItem = getCurrentMenuItem(menu, section?.getAttribute("id"));
+    let section = getCurrentSection(sections, offset);
+    let menuItem = getCurrentMenuItem(menu, section?.getAttribute("id"));
     transferClass(menuItem, "active");
 }
 

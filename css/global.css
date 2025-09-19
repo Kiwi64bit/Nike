@@ -59,6 +59,8 @@
     color: var(--main-color);
     border: 1px solid var(--main-color);
     cursor: pointer;
+    transition: color 0.15s ease-in-out,
+        background-color 0.15s ease-in-out
 }
 
 .indicator.active {
@@ -83,6 +85,8 @@
 }
 
 .indicator-color {
+    display: inline-block;
+    background-color: var(--bg-color);
     width: 1em;
     height: 1em;
     border: 1px solid hsl(0, 0%, 0%);
@@ -207,7 +211,6 @@ nav .icons li:hover {
     max-height: 100%;
     overflow: hidden;
     background-color: var(--primary-color);
-    background-clip: padding-box;
     border-radius: 1rem;
 }
 
@@ -267,13 +270,17 @@ nav .icons li:hover {
 }
 
 @media (min-width: 768px) {
-    .custom-modal {
+
+    .custom-modal,
+    .custom-modal-md {
         --modal-width: 720px;
     }
 }
 
 @media (min-width: 992px) {
-    .custom-modal {
+
+    .custom-modal,
+    .custom-modal-lg {
         --modal-width: 960px;
     }
 }
@@ -301,12 +308,26 @@ nav .icons li:hover {
 
 .slide-show .slide-show-control-prev {
     position: absolute;
-    top: 50%;
-    left: 2rem;
+    top: calc(100% - 4em);
+    left: calc(100% - 6em);
 }
 
 .slide-show .slide-show-control-next {
     position: absolute;
-    top: 50%;
-    right: 2rem;
+    top: calc(100% - 4em);
+    right: calc(0% + 1.5em);
+}
+
+@media (min-width: 576px) {
+    .slide-show .slide-show-control-prev {
+        position: absolute;
+        top: 50%;
+        left: 2rem;
+    }
+
+    .slide-show .slide-show-control-next {
+        position: absolute;
+        top: 50%;
+        right: 2rem;
+    }
 }

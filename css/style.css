@@ -40,13 +40,36 @@ body {
     scale: 1;
 }
 
-#offers .sale {
+.sale {
+    display: inline-block;
+    position: relative;
+}
+
+.sale img {
     scale: 1.1;
     transition: scale 1s;
 }
 
-#offers .sale:hover {
+.sale:hover img {
     scale: 1;
+}
+
+.sale::after {
+    content: "";
+    width: 100%;
+    height: 50%;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    translate: 0% -50%;
+    rotate: 45deg;
+    background-color: hsla(0, 0%, 100%, 0.3);
+    transition: left 1s, translate 1s;
+}
+
+.sale:hover::after  {
+    left: 0%;
+    translate: -100% -50%;  
 }
 
 .latest-card .thumbnail {
@@ -128,4 +151,8 @@ body {
 
 .featured-card:hover .card-image img {
     scale: 1;
+}
+
+.cart-card {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 3px 8px;
 }
