@@ -278,7 +278,9 @@ function createCartCard(data) {
 
 function createProductsContainer(cart) {
     let productsContainer = document.createElement("div");
-    productsContainer.classList.add(..."row row-cols-1 row-cols-sm-2 row-cols-md-3 gx-3 row-gap-3 justify-content-center".split(" "));
+    productsContainer.classList.add(
+        ..."row row-cols-1 row-cols-sm-2 row-cols-md-3 gx-3 row-gap-3 justify-content-center".split(" ")
+    );
     for (let data of cart) {
         let productCard = createCartCard(data);
         let colWrapper = createWrapper(productCard, "div", "col");
@@ -324,33 +326,4 @@ function scrollSpy(sections, menu, offset) {
     let section = getCurrentSection(sections, offset);
     let menuItem = getCurrentMenuItem(menu, section?.getAttribute("id"));
     transferClass(menuItem, "active");
-}
-
-function throttle(callback, delay) {
-    let ticking = false; // Control flag
-
-    // Returning a throttled version
-    return function (...args) {
-        if (!ticking) {
-            callback.apply(this, args); // Run the callback function
-            setTimeout(() => {
-                ticking = false; // Allow calls after delay
-            }, delay);
-            ticking = true; // Block further calls
-        }
-    };
-}
-
-function rafThrottle(callback) {
-    let ticking = false;
-
-    return function (...args) {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                callback.apply(this, args);
-                ticking = false;
-            });
-            ticking = true;
-        }
-    };
 }

@@ -153,7 +153,7 @@ document.addEventListener("click", event => {
     }
 });
 
-window.addEventListener("scroll", () => rafThrottle(scrollSpy(sections, navbar, scrollSpyOffset)));
+window.addEventListener("scroll", scrollSpy(sections, navbar, scrollSpyOffset));
 
 window.addEventListener("keyup", event => {
     controlsFile[event.key]?.();
